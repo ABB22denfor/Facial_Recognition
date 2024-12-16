@@ -17,6 +17,7 @@ Se till att följande program och bibliotek är installerade:
 - OpenCV
 - DeepFace
 - NumPy
+- tf-keras
 
 ## Installation
 1. Klona detta repository:
@@ -26,7 +27,7 @@ Se till att följande program och bibliotek är installerade:
 
 2. Installera nödvändiga Python-paket:
    ```
-   pip install opencv-python deepface numpy
+   pip install opencv-python deepface numpy tf-keras
    ```
 
 3. Skapa en mapp som heter `images/` och lägg till undermappar med personnamn som namn. Lägg till referensbilder för varje person i respektive undermapp. Exempel:
