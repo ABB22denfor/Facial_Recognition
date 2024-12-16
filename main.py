@@ -1,24 +1,25 @@
 import threading
 import cv2
 import os
-from deepface import DeepFace
+from deepface import DeepFace #import använda libraries
 
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(1, cv2.CAP_DSHOW) #val av använda kamera, 0 = datorns video kamera, 1 = extern kamera
 
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640) 
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480) #val av dimensioner på kamera fönstret
 
-counter = 0
+frame_counter = 0 #sätter frame countern till 0
 
-face_match = False
+face_match = False #sätter face_match till falsk
 
-person = ""
+person = "" #identifierar variabeln person som en tom string
 
-lock = threading.Lock()
+lock = threading.Lock() #Definierar ett lås så att variabler i aktuell thread inte kan nås av andra threads
 
-def get_images(folder_path="images"):
-    reference_images = {}
-    for person in os.listdir(folder_path):
+def get_images(folder_path="images"): #skapar funktionen get_imaages med folder_path som argument, 
+                                    #funktionen hämtar alla bilder under images och lägger in de i reference images dictionary under rätt person
+    reference_images = {} 
+    for person in os.listdir(folder_path): 
         person_path = os.path.join(folder_path, person)
         if os.path.isdir(person_path):
             reference_images[person] = []
@@ -32,7 +33,8 @@ def get_images(folder_path="images"):
     return reference_images
 
 
-def check_face(frame):
+def check_face(frame):#skapar funktionen check_face med frame som argument, 
+                    #funktionen jämför framen med bilderna från reference images 
     global face_match
     global person
 
@@ -50,17 +52,17 @@ def check_face(frame):
             person = ""
             face_match = False
 
-while True:
+while True: #true loopen checkar för identifikation genom att kolla om personen i framen matchar en av personerna på bilderna
     ret, frame = cap.read()
 
 
     if ret:
-        if counter % 30 == 0:
+        if frame_counter % 30 == 0:
             try:
                 threading.Thread(target=check_face, args=(frame.copy(),)).start()
             except ValueError:
                 pass
-        counter += 1
+        frame_counter += 1
 
         if face_match:
             cv2.putText(frame, person, (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 3)
